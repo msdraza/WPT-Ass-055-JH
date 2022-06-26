@@ -1,0 +1,224 @@
+<html>
+<head>
+		<script
+  src="https://code.jquery.com/jquery-3.6.0.js"
+  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+<script>
+const Employee=[ {empid:1,ename:'Faf',email:'A@bgmail.com',deptid:5},
+	{empid:2,ename:'Tambua',email:'d@bgmail.com',deptid:7},
+	{empid:3,ename:'Dany',email:'A@dgmail.com',deptid:5},
+	{empid:4,ename:'Chirsh',email:'c@bgmail.com',deptid:7}]; 
+
+$(()=>{
+
+$("#empid").blur(()=>{
+console.log("blur event");
+
+let empno= $("#empid").val();
+let output= getEmployeeDetailsLogic(empno);
+
+if(output.result)
+{
+	$("#ename").val(output.Employeedetails.ename);
+	$("#email").val(output.Employeedetails.email);
+	$("#deptid").val(output.Employeedetails.deptid);
+	
+	$("#add").prop("disabled",true);
+	$("#modify").prop("disabled",false);
+	$("#remove").prop("disabled",false);
+		$("#viewall").prop("disabled",true);
+	$("#viewdept").prop("disabled",true);
+	$("#msg").text("Employe details found");
+	$("#contents").html("i will show the details");
+
+}
+else
+{
+	$("#add").prop("disabled",false);
+	$("#modify").prop("disabled",true);
+	$("#remove").prop("disabled",true);
+		$("#viewall").prop("disabled",true);
+	$("#viewdept").prop("disabled",true);
+
+	$("#msg").text("Employee details not found");
+	$("#ename").val("");
+	$("#email").val("");
+	$("#deptid").val("");
+	$("#contents").html("i will show the details");
+}
+
+});
+
+$("#viewall").click(()=>{
+DisplayEmpDetails();
+
+});
+
+$("#modify").click(()=>{
+
+let input= {empid:$("#empid").val(),
+ename:$("#ename").val(),
+email:$("#email").val(),
+deptid:$("#deptid").val()};
+
+let output=modifyEmpDetailsLogic(input);
+
+if(output){
+	$("#add").prop("disabled",true);
+	$("#modify").prop("disabled",true);
+	$("#remove").prop("disabled",true);
+	$("#msg").text("Employee details updated");
+	$("#ename").val("");
+	$("#email").val("");
+	$("#deptid").val("");
+	$("#contents").html("i will show the details");
+
+
+}
+else
+{prop
+	$("#add").prop("disabled",true);
+	$("#modify").prop("disabled",true);
+	$("#remove").prop("disabled",true);
+	$("#msg").text("Employee details updatation failed");
+	$("#ename").val("");
+	$("#email").val("");
+	$("#deptid").val("");
+	$("#contents").html("i will show the details");
+
+
+}
+});
+
+
+$("#add").click( ()=>{
+
+let input= {empid:$("#empid").val(),
+ename:$("#ename").val(),
+email:$("#email").val(),
+deptid:$("#deptid").val()};
+
+let output=addNoInArray(input);
+
+if(output==1)
+{
+$("#add").prop("disabled" ,truee);
+	$("#modify").prop("disabled" ,truee);
+	$("#remove").prop("disabled" ,truee);
+		$("#viewall").prop("disabled" ,false);
+	$("#viewdept").prop("disabled" ,false);
+	$("#msg").text("Employee details add successfully");
+	$("#ename").val("");
+	$("#email").val("");
+	$("#deptid").val("");
+	$("#contents").html("i will show the details");
+
+}
+});
+
+
+$("#remove").click(()=>{
+	let output=deleteLogic($("#empid").val());
+	$("#add").prop("disabled",true);
+	$("#modify").prop("disabled",true);
+	$("#remove").prop("disabled",true);
+		$("#viewall").prop("disabled",false);
+	$r("#viewdept").prop("disabled",false);
+		$("#msg").text("Employee details removed successfully");
+	});
+
+function getEmployeeDetailsLogic(empnum)
+{
+let output ={ result:false, Employeedetails:{},index:0};
+for(let i=0; i < Employee.length; i++)
+{
+if(Employee[i].empid == empnum )
+{	
+	output.result=true;
+	output.index=i;
+	output.Employeedetails=Employee[i];
+	break;
+}
+
+}
+return output;
+}
+
+function DisplayEmpDetails()
+{	
+	
+	let output=Employee;
+	
+	let msg="";
+	for(let i=0; i < output.length; i++)
+	  msg+= "<Br/>" + output[i].empid +  " --- " + output[i].ename +
+	  "--"+ output[i].email+"--"+output[i].deptid;
+	  
+	  $("#contents").html(msg);
+
+
+}
+function deleteLogic(empid){
+	let output=getEmployeeDetailsLogic(empid);
+	let i=output.index;
+	Employee.splice(i,1);
+}
+
+
+function modifyEmpDetailsLogic(updatedemp)
+{
+let output =false;
+for(let i=0; i < Employee.length; i++)
+{
+{	
+
+	Employee[i].empid=updatedemp.empid ;
+	Employee[i].ename=updatedemp.ename;
+	Employee[i].email=updatedemp.email;
+	Employee[i].deptid=updatedemp.deptid;
+	output=true;
+	
+	break;
+}
+
+}
+return output;
+}
+
+
+
+function addNoInArray(AddArray){
+let i=(Employee.length-1);
+Employee[i].empid=AddArray.empid ;
+	Employee[i].ename=AddArray.ename;
+	Employee[i].email=AddArray.email;
+	Employee[i].deptid=AddArray.deptid;
+return 1;
+}
+
+
+
+});
+
+
+</script>
+<style>
+</style>
+</head>
+<body>
+<h1>Employee Details Table</h1>
+</hr>
+<input type="text" id="empid" placeholder="empolyeeid"><span id="msg">X</span></br>
+<input type="text" id="ename" placeholder="emp name"></br>
+<input type="text" id="email" placeholder="emailid"></br>
+<input type="text" id="deptid" placeholder="departmentid"></br>
+<button id="add" disabled> add</button>
+<button id="modify" disabled> modify</button>
+<button id="remove" disabled> remove</button>
+<button id="viewall" disabled> view all</button>
+<button id="viewdept" disabled> view on deptid</button>
+</hr>
+<p id="contents"> i will show the details</p>
+</body>
+</html>

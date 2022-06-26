@@ -1,0 +1,171 @@
+<html>
+  <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+    <script>
+      $(() => {
+        //assume these details came from the server.
+        let items = [];
+
+        //logic function
+
+        //ui function
+        function showContents() {
+          let parameterstothefunction = {
+            data: {},
+            url: "http://localhost:8081/getAllitems",
+            type: "get",
+            dataType: "json",
+            success: (datagivenbyserver) => {
+              items = datagivenbyserver;
+
+              let itemscontents = "";
+              for (let i = 0; i < items.length; i++) {
+                itemscontents +=
+                  "<br/>" +
+                  items[i].itemno +
+                  "  " +
+                  items[i].itemname +
+                  " " +
+                  items[i].price;
+              }
+              $("#contents").html(itemscontents);
+            },
+            error: (err) => {
+              console.log(" failure  " + err);
+            },
+          };
+          $.ajax(parameterstothefunction);
+        }
+
+        //setting up on blur.. writing comments not a good idea.
+
+        $("#itemno").blur(() => {
+          //difficult things begin
+          //the below line is input
+          let itemno = $("#itemno").val();
+
+          let parameterstothefunction = {
+            data: { itemno: itemno },
+            url: "http://localhost:8081/getitems",
+            type: "get",
+            dataType: "json",
+            success: (output) => {
+              console.log("succes " + output.itemnofoundstatus);
+              document.querySelector("#itemno").disabled = true;
+
+              if (output.itemnofoundstatus) {
+                $("#message").text("item details found");
+
+                $("#itemname").val(output.itemdetails.itemname);
+
+                $("#itemprice").val(output.itemdetails.price);
+              } else {
+                $("#message").text("item details not found");
+                $("#itemname").val("");
+                $("#itemprice").val("");
+              }
+            },
+            error: (datagivenbyserver) => {
+              console.log("failure " + datagivenbyserver);
+            },
+          };
+          $.ajax(parameterstothefunction);
+        });
+
+        $("#add").click(() => {
+          let input = {
+            x: $("#itemno").val(),
+            y: $("#itemname").val(),
+            z: $("#itemprice").val(),
+          };
+
+          let parameterstothefunction = {
+            data: input,
+            url: "http://localhost:8081/additems",
+            type: "get",
+            dataType: "json",
+            success: (output) => {
+              console.log("test the sucess" + output.status);
+
+              if (output) {
+                $("#message").text("added succesfully");
+                $("#message").removeClass("nm").addClass("em");
+              } else {
+                $("#message").text("could not add item");
+              }
+
+              $("#itemname").val("");
+              $("#itemprice").val("");
+
+              showContents();
+
+              document.querySelector("#itemno").disabled = false;
+            },
+            error: (err) => {
+              console.log("test the sucess" + err);
+            },
+          };
+
+          $.ajax(parameterstothefunction);
+        }); //end of add event
+
+        $("#update").click(() => {
+          //hard thing begins
+          let updatedObject = {
+            x: $("#itemno").val(),
+            y: $("#itemname").val(),
+            z: $("#itemprice").val(),
+          };
+          let parameterstothefunction = {
+            data: updatedObject,
+            url: "http://localhost:8081/updateitems",
+            type: "get",
+            dataType: "json",
+            success: (output) => {
+              console.log("test the sucess" + output);
+
+              if (output.status) {
+                $("#message").text("updated successfully");
+                $("#message").removeClass("em").addClass("nm");
+              } else {
+                $("#message").text("could not update item");
+              }
+              $("#itemname").val("");
+              $("#itemprice").val("");
+            },
+            error: (err) => {
+              console.log("test the failure" + err);
+            },
+          };
+          $.ajax(parameterstothefunction);
+
+          showContents();
+        });
+
+        showContents();
+      });
+    </script>
+    <style>
+      .em {
+        color: green; /* total stupid */
+      }
+      .nm {
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <br />
+    <input type="text" id="itemno" placeholder="item number" />
+    <span id="message"> what happened</span>
+    <br />
+    <input type="text" id="itemname" placeholder="item name" />
+    <br />
+    <input type="text" id="itemprice" placeholder="item price" />
+    <br /><br /><button id="add">Add Item</button>
+    <button id="update">update Item</button>
+    <hr />
+    <p id="contents">all items show it here</p>
+  </body>
+</html>

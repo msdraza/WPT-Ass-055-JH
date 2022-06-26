@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Arear pin code detactor</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script>
+      $(() => {
+        console.log("contents is loaded");
+        $("#areaname").blur(() => {
+          console.log("blur is working");
+          let areaname = { area: $("#areaname").val() };
+          let parametertoserver = {
+            data: areaname,
+            url: "http://localhost:1236/pinarea",
+            type: "get",
+            datatype: "text",
+            success: (datagivenbyserver) => {
+              console.log(datagivenbyserver.status + "  success");
+              $("#message").html(datagivenbyserver.pincode);
+            },
+            error: (datagivenbyserver) => {
+              console.log(datagivenbyserver);
+              $("#message").html("");
+            },
+          };
+          $.ajax(parametertoserver);
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <input type="text" id="areaname" placeholder="Area name" /><br />
+    Pin code:
+    <span id="message"></span>
+  </body>
+</html>

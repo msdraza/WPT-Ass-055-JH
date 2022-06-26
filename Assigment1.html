@@ -1,0 +1,205 @@
+<html>
+<head>
+	<script
+  src="https://code.jquery.com/jquery-3.6.0.js"
+  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+<script>
+
+
+
+const array=[ {arrayNum:1},{arrayNum:2},{arrayNum:3},
+	{arrayNum:4},{arrayNum:5},{arrayNum:6},
+	{arrayNum:7},{arrayNum:8},{arrayNum:9},
+	{arrayNum:10}]; 
+
+
+$(()=>{
+
+$("#Arr_text").blur(()=>{
+console.log("blur event");
+let arr= $("#Arr_text").val();
+
+let output=getDetails(arr);
+
+if(output.result)
+{	
+	$( "#edit" ).prop( "disabled", false );
+	$( "#delete" ).prop( "disabled", false );
+	$("#msg").text("Number found");
+	$( "#add" ).prop( "disabled", true );
+	$( "#ShowAll" ).prop( "disabled", true );
+	$( "#OddPsoition" ).prop( "disabled", true );
+}
+else
+{
+
+	$( "#add" ).prop( "disabled", false );
+	$( "#edit" ).prop( "disabled", true );
+	$("#msg").text("Number not found");
+	$( "#delete" ).prop( "disabled", true );
+	$( "#ShowAll" ).prop( "disabled", true );
+	$( "#OddPsoition" ).prop( "disabled", true );
+	$("#Contents").text("");
+
+}
+
+});
+$("#add").click(()=>{
+let input=$("#Arr_text").val();
+let output=addNoInarray(input);
+	
+	if(output==1){
+		$("#msg").text("Number updated successfully");
+		$( "#add" ).prop( "disabled", true );
+		$( "#edit" ).prop( "disabled", true );
+	$("#delete").prop("disabled",true);
+	$("#ShowAll").prop("disabled",false);
+	$("#OddPsoition").prop("disabled",false);
+		
+	}
+	
+	});
+	
+$("#delete").click(()=>{
+let input=$("#Arr_text").val();
+let output=deleteNOarray(input);
+	
+	if(output==true){
+		$("#msg").text("Number delted successfully");
+		$( "#add" ).prop( "disabled", true );
+		$("#delete").prop("disabled",true);
+		$( "#edit" ).prop( "disabled", true );
+		$("#ShowAll").prop("disabled",false);
+		$("#OddPsoition").prop("disabled",false);
+	}
+	
+	
+	});
+
+
+	$("#edit").click(()=>{
+		let num1=prompt("plss enter the number to change");
+		let output=getDetails(num1);
+		let output2=getDetails($("#ArrText").val());
+	if(output.result==true){
+		$("#msg").text("Number is already present");
+		$( "#add" ).prop( "disabled", true );
+		$( "#edit" ).prop( "disabled", true );
+		$("#delete").prop("disabled",true);
+		$("#ShowAll").prop("disabled",false);
+		$("#OddPsoition").prop("disabled",false);	
+		
+	}
+	else{
+		console.log(output2.inx);
+		changeValues(output2.inx,num1);
+		$("#msg").text("Number updated succesfully");
+		$( "#add" ).prop( "disabled", true );
+		$( "#edit" ).prop( "disabled", true );
+		$("#delete").prop("disabled",true);
+		$("#ShowAll").prop("disabled",false);
+		$("#OddPsoition").prop("disabled",false);	
+	
+	}
+	
+	});
+	
+
+	
+	$("#ShowAll").click(()=>{
+		displayarray();
+	});
+	
+	$("#OddPsoition").click(()=>{
+		displayOddarray();
+	});
+	
+	
+function getDetails(num)
+{
+
+let output ={ result:false, inx:0};
+for(let i=0; i < array.length; i++)
+{
+if(array[i].arrayNum == num )
+{	
+	output.result=true;
+	output.inx=i;
+	break;
+}
+
+}
+return output;
+}
+
+function addNoInarray(num){
+let i=(array.length-1);
+array[i].arrayNum=num;
+return 1;
+}
+
+
+function changeValues(inx,val1){
+	array[inx].arrayNum=val1;
+	
+}
+
+
+function displayarray(){
+	let Arrdis=array;
+	
+	
+	let msg="";
+	for(let i=0; i < Arrdis.length; i++)
+	msg+=Arrdis[i].arrayNum+" ";
+	$("#contents").hTML(msg);
+}
+
+
+	function displayOddarray(){
+		let Arrdis=array;
+	
+	
+	let msg="";
+	for(let i=0; i < Arrdis.length; i++)
+		if((i%2)==0){
+	msg+=Arrdis[i].arrayNum+" ";
+	}
+	$("#contents").hTML(msg);
+}
+
+
+function deleteNOarray(num)
+{
+for(let i=0; i < array.length; i++)
+{
+if(array[i].arrayNum == num )
+{	
+	array.splice(i,1);
+	break;
+}
+
+}
+return true;
+}
+
+});
+
+</script>
+<style>
+</style>
+</head>
+<body>
+<h1>Pre Define arrayar of Numbers</h1>
+<hr/>
+<input type="text" id="Arr_text" placeholder="Numbers"><span id="msg">  Indication Message</span>
+</br><button id="add" disabled>add number</button>
+<button id="edit" disabled>edit</button>
+<button id="delete" disabled>delete</button>
+<button id="ShowAll" disabled>show all</button>
+<button id="OddPsoition" disabled>show odd position</button>
+</br>
+<p id="Contents"> I will show you desired output</p>
+</body>
+</html>
